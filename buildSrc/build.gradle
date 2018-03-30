@@ -13,44 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.jetbrains.kotlin.VersionGenerator
-
 buildscript {
-    ext.rootBuildDirectory = file('..')
-
+    println("rootDir: $rootDir")
+    ext.rootBuildDirectory = "$rootDir/../.."
     apply from: "$rootBuildDirectory/gradle/loadRootProperties.gradle"
     apply from: "$rootBuildDirectory/gradle/kotlinGradlePlugin.gradle"
+
 }
+
 
 apply plugin: 'kotlin'
 
-group = 'org.jetbrains.kotlin'
-version = konanVersion
-
 repositories {
     mavenCentral()
-    maven {
-        url kotlinCompilerRepo
-    }
-}
-
-task generateCompilerVersion(type: VersionGenerator){}
-
-sourceSets {
-    main.kotlin {
-        srcDir 'src/main/kotlin'
-        srcDir generateCompilerVersion.versionSourceDirectory
-    }
-}
-
-compileKotlin{
-    dependsOn('generateCompilerVersion')
-}
-
-jar {
-    archiveName = "shared.jar"
 }
 
 dependencies {
+    compile gradleApi()
+    compile localGroovy()
     compile "org.jetbrains.kotlin:kotlin-stdlib:$buildKotlinVersion"
 }
