@@ -46,7 +46,7 @@ fun defaultResolver(
         directLibs,
         target,
         listOf(KonanAbiVersion.CURRENT),
-        listOf(KonanVersion.CURRENT) + compatibleCompilerVersions,
+        /*listOf(KonanVersion.CURRENT) + */ compatibleCompilerVersions,  // FIXME: provide KonanVersion.CURRENT!
         distribution.klib,
         distribution.localKonanDir.absolutePath,
         skipCurrentDir,

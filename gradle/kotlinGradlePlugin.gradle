@@ -7,7 +7,6 @@ if (!hasProperty('buildKotlinCompilerRepo')) {
 }
 
 project.buildscript.repositories {
-
     maven {
         url buildKotlinCompilerRepo
     }

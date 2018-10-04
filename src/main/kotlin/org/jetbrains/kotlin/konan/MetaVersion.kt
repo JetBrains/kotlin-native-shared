@@ -16,8 +16,6 @@
 
 package org.jetbrains.kotlin.konan
 
-// FIXME(ddol): KLIB-REFACTORING-CLEANUP: remove the whole file!
-
 /**
  *  https://en.wikipedia.org/wiki/Software_versioning
  *  scheme major.minor[.build[.revision]].
@@ -36,7 +34,7 @@ enum class MetaVersion(val metaString: String) {
 
         fun findAppropriate(metaString: String): MetaVersion {
             return MetaVersion.values().find { it.metaString.equals(metaString, ignoreCase = true) }
-                    ?: if (metaString.isBlank()) RELEASE else error("Unknown meta version: $metaString")
+                ?: if (metaString.isBlank()) RELEASE else error("Unknown meta version: $metaString")
         }
     }
 }
