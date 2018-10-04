@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.jetbrains.kotlin.VersionGenerator
 
 buildscript {
-    ext.rootBuildDirectory = rootDir
-
-    apply from: "$rootBuildDirectory/gradle/loadRootProperties.gradle"
-    apply from: "$rootBuildDirectory/gradle/kotlinGradlePlugin.gradle"
+    apply from: "gradle/kotlinGradlePlugin.gradle"
 }
 
 apply plugin: 'kotlin'
 
 group = 'org.jetbrains.kotlin'
-version = konanVersion
+version = sharedVersion
 
 repositories {
     mavenCentral()
@@ -34,32 +30,19 @@ repositories {
     }
 }
 
-// FIXME(ddol): KLIB-REFACTORING-CLEANUP: drop generation of KonanVersion!
-task generateCompilerVersion(type: VersionGenerator){}
-
 sourceSets {
     main.kotlin {
         srcDir 'src/main/kotlin'
         srcDir 'src/library/kotlin'
-        srcDir generateCompilerVersion.versionSourceDirectory
     }
 }
 
-compileKotlin {
-    dependsOn('generateCompilerVersion')
-}
-
-clean {
-    doFirst {
-        if (generateCompilerVersion.versionSourceDirectory.exists())
-             generateCompilerVersion.versionSourceDirectory.delete()
-    }
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$buildKotlinVersion"
 }
 
 jar {
     archiveName = "shared.jar"
 }
 
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$buildKotlinVersion"
-}
+
