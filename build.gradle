@@ -19,6 +19,7 @@ buildscript {
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'maven-publish'
 
 group = 'org.jetbrains.kotlin'
 version = sharedVersion
@@ -46,4 +47,16 @@ jar {
 }
 
 // TODO: Add bintray publishing.
+publishing {
+    repositories {
+        maven {
+            url = "$buildDir/maven"
+        }
+    }
 
+    publications {
+        shared(MavenPublication) {
+            from components.java
+        }
+    }
+}
