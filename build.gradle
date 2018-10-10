@@ -46,11 +46,15 @@ jar {
     archiveName = "shared.jar"
 }
 
+clean {
+    delete "$projectDir/maven"
+}
+
 // TODO: Add bintray publishing.
 publishing {
     repositories {
         maven {
-            url = "$buildDir/maven"
+            url = "$projectDir/maven"
         }
     }
 
