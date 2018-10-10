@@ -45,4 +45,5 @@ jar {
     archiveName = "shared.jar"
 }
 
+// TODO: Add bintray publishing.
 
