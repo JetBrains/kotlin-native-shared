@@ -32,6 +32,10 @@ class DefFile(val file:File?, val config:DefFileConfig, val manifestAddendProper
             properties.getSpaceSeparated("headers")
         }
 
+        val modules by lazy {
+            properties.getSpaceSeparated("modules")
+        }
+
         val language by lazy {
             properties.getProperty("language")
         }
@@ -62,6 +66,10 @@ class DefFile(val file:File?, val config:DefFileConfig, val manifestAddendProper
 
         val excludedFunctions by lazy {
             properties.getSpaceSeparated("excludedFunctions")
+        }
+
+        val excludedMacros by lazy {
+            properties.getSpaceSeparated("excludedMacros")
         }
 
         val staticLibraries by lazy {

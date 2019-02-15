@@ -10,4 +10,5 @@ internal object DefaultMetadataReaderImpl : MetadataReader {
 
     override fun loadSerializedPackageFragment(libraryLayout: KonanLibraryLayout, fqName: String, partName: String): ByteArray =
             libraryLayout.packageFragmentFile(fqName, partName).readBytes()
+
 }
