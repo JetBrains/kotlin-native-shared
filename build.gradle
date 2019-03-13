@@ -42,10 +42,6 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$buildKotlinVersion"
 }
 
-jar {
-    archiveName = "shared.jar"
-}
-
 // TODO: Add bintray publishing.
 publishing {
     repositories {
