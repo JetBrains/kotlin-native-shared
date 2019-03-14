@@ -22,7 +22,6 @@ apply plugin: 'kotlin'
 apply plugin: 'maven-publish'
 
 group = 'org.jetbrains.kotlin'
-version = sharedVersion
 
 repositories {
     mavenCentral()
