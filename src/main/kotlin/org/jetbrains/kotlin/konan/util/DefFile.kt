@@ -114,9 +114,8 @@ class DefFile(val file:File?, val config:DefFileConfig, val manifestAddendProper
     }
 }
 
-private fun Properties.getSpaceSeparated(name: String): List<String> {
-    return this.getProperty(name)?.split(' ')?.filter { it.isNotEmpty() } ?: emptyList()
-}
+private fun Properties.getSpaceSeparated(name: String): List<String> =
+        this.getProperty(name)?.let { parseSpaceSeparatedArgs(it) } ?: emptyList()
 
 private fun parseDefFile(file: File?, substitutions: Map<String, String>): Triple<Properties, Properties, List<String>> {
      val properties = Properties()
@@ -140,12 +139,11 @@ private fun parseDefFile(file: File?, substitutions: Map<String, String>): Tripl
          propertyLines = lines
          headerLines = emptyList()
      }
-
-     val propertiesReader = StringReader(propertyLines.joinToString(System.lineSeparator()))
+     val propertiesReader = StringReader(propertyLines.joinToString(System.lineSeparator()).replace("\\\\(?=.)".toRegex(), "\\\\\\\\"))
      properties.load(propertiesReader)
 
      // Pass unsubstituted copy of properties we have obtained from `.def`
-     // to compiler `-maniest`.
+     // to compiler `-manifest`.
      val manifestAddendProperties = properties.duplicate()
 
      substitute(properties, substitutions)

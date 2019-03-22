@@ -59,3 +59,45 @@ fun String.removeSuffixIfPresent(suffix: String) =
     if (this.endsWith(suffix)) this.dropLast(suffix.length) else this
 
 fun <T> Lazy<T>.getValueOrNull(): T? = if (isInitialized()) value else null
+
+fun parseSpaceSeparatedArgs(argsString: String): List<String> {
+    val parsedArgs = mutableListOf<String>()
+    var inQuotes = false
+    var isEscape = false
+    var currentCharSequense = ""
+    val saveArg = {
+        if (!currentCharSequense.isEmpty()) {
+            parsedArgs.add(currentCharSequense)
+            currentCharSequense = ""
+        }
+    }
+    argsString.forEach { char ->
+        if (char == '\\') {
+            if (!isEscape) {
+                isEscape = true
+            } else {
+                currentCharSequense = "$currentCharSequense$char"
+                isEscape = false
+            }
+        } else {
+            if (char == '"' && !isEscape) {
+                inQuotes = !inQuotes
+                // Save value which was in quotes.
+                if (!inQuotes) {
+                    saveArg()
+                }
+            } else if (char == ' ' && !inQuotes) {
+                // Space is separator.
+                saveArg()
+            } else {
+                currentCharSequense = "$currentCharSequense$char"
+            }
+            isEscape = false
+        }
+    }
+    if (inQuotes) {
+        error("No close-quote was found in $currentCharSequense.")
+    }
+    saveArg()
+    return parsedArgs
+}
