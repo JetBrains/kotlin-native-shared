@@ -18,6 +18,7 @@ package org.jetbrains.kotlin.konan.util
 
 import kotlin.system.measureTimeMillis
 import org.jetbrains.kotlin.konan.file.*
+import java.lang.StringBuilder
 
 // FIXME(ddol): KLIB-REFACTORING-CLEANUP: remove this function:
 fun <T> printMillisec(message: String, body: () -> T): T {
@@ -64,11 +65,11 @@ fun parseSpaceSeparatedArgs(argsString: String): List<String> {
     val parsedArgs = mutableListOf<String>()
     var inQuotes = false
     var isEscape = false
-    var currentCharSequense = ""
+    var currentCharSequence = StringBuilder()
     val saveArg = {
-        if (!currentCharSequense.isEmpty()) {
-            parsedArgs.add(currentCharSequense)
-            currentCharSequense = ""
+        if (!currentCharSequence.isEmpty()) {
+            parsedArgs.add(currentCharSequence.toString())
+            currentCharSequence = StringBuilder()
         }
     }
     argsString.forEach { char ->
@@ -76,7 +77,7 @@ fun parseSpaceSeparatedArgs(argsString: String): List<String> {
             if (!isEscape) {
                 isEscape = true
             } else {
-                currentCharSequense = "$currentCharSequense$char"
+                currentCharSequence.append(char)
                 isEscape = false
             }
         } else {
@@ -90,13 +91,13 @@ fun parseSpaceSeparatedArgs(argsString: String): List<String> {
                 // Space is separator.
                 saveArg()
             } else {
-                currentCharSequense = "$currentCharSequense$char"
+                currentCharSequence.append(char)
             }
             isEscape = false
         }
     }
     if (inQuotes) {
-        error("No close-quote was found in $currentCharSequense.")
+        error("No close-quote was found in $currentCharSequence.")
     }
     saveArg()
     return parsedArgs
