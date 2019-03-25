@@ -66,7 +66,7 @@ fun parseSpaceSeparatedArgs(argsString: String): List<String> {
     var inQuotes = false
     var isEscape = false
     var currentCharSequence = StringBuilder()
-    val saveArg = {
+    fun saveArg() {
         if (!currentCharSequence.isEmpty()) {
             parsedArgs.add(currentCharSequence.toString())
             currentCharSequence = StringBuilder()
