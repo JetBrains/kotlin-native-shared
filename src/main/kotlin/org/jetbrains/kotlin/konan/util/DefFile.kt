@@ -139,7 +139,18 @@ private fun parseDefFile(file: File?, substitutions: Map<String, String>): Tripl
          propertyLines = lines
          headerLines = emptyList()
      }
-     val propertiesReader = StringReader(propertyLines.joinToString(System.lineSeparator()).replace("""\\(?=.)""".toRegex(), Regex.escapeReplacement("""\\""")))
+
+     // \ isn't escaping character in quotes, so replace them with \\.
+     val joinedLines = propertyLines.joinToString(System.lineSeparator())
+     val escapedTokens = joinedLines.split('"')
+     val postprocessProperties = escapedTokens.mapIndexed { index, token ->
+         if (index % 2 != 0) {
+             token.replace("""\\(?=.)""".toRegex(), Regex.escapeReplacement("""\\"""))
+         } else {
+             token
+         }
+     }.joinToString("\"")
+     val propertiesReader = StringReader(postprocessProperties)
      properties.load(propertiesReader)
 
      // Pass unsubstituted copy of properties we have obtained from `.def`
