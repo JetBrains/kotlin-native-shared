@@ -139,7 +139,7 @@ private fun parseDefFile(file: File?, substitutions: Map<String, String>): Tripl
          propertyLines = lines
          headerLines = emptyList()
      }
-     val propertiesReader = StringReader(propertyLines.joinToString(System.lineSeparator()).replace("\\\\(?=.)".toRegex(), """\\\\"""))
+     val propertiesReader = StringReader(propertyLines.joinToString(System.lineSeparator()).replace("""\\(?=.)""".toRegex(), Regex.escapeReplacement("""\\""")))
      properties.load(propertiesReader)
 
      // Pass unsubstituted copy of properties we have obtained from `.def`

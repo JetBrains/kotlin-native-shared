@@ -64,7 +64,6 @@ fun <T> Lazy<T>.getValueOrNull(): T? = if (isInitialized()) value else null
 fun parseSpaceSeparatedArgs(argsString: String): List<String> {
     val parsedArgs = mutableListOf<String>()
     var inQuotes = false
-    var isEscape = false
     var currentCharSequence = StringBuilder()
     fun saveArg() {
         if (!currentCharSequence.isEmpty()) {
@@ -73,27 +72,17 @@ fun parseSpaceSeparatedArgs(argsString: String): List<String> {
         }
     }
     argsString.forEach { char ->
-        if (char == '\\') {
-            if (!isEscape) {
-                isEscape = true
-            } else {
-                currentCharSequence.append(char)
-                isEscape = false
-            }
-        } else {
-            if (char == '"' && !isEscape) {
-                inQuotes = !inQuotes
-                // Save value which was in quotes.
-                if (!inQuotes) {
-                    saveArg()
-                }
-            } else if (char == ' ' && !inQuotes) {
-                // Space is separator.
+        if (char == '"') {
+            inQuotes = !inQuotes
+            // Save value which was in quotes.
+            if (!inQuotes) {
                 saveArg()
-            } else {
-                currentCharSequence.append(char)
             }
-            isEscape = false
+        } else if (char == ' ' && !inQuotes) {
+            // Space is separator.
+            saveArg()
+        } else {
+            currentCharSequence.append(char)
         }
     }
     if (inQuotes) {
