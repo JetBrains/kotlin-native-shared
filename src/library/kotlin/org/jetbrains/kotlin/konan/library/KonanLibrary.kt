@@ -51,7 +51,7 @@ val KonanLibrary.uniqueName
     get() = manifestProperties.getProperty(KLIB_PROPERTY_UNIQUE_NAME)!!
 
 val KonanLibrary.unresolvedDependencies: List<UnresolvedLibrary>
-    get() = manifestProperties.propertyList(KLIB_PROPERTY_DEPENDS)
+    get() = manifestProperties.propertyList(KLIB_PROPERTY_DEPENDS, escapeInQuotes = true)
             .map {
                 UnresolvedLibrary(it, manifestProperties.getProperty("dependency_version_$it"))
             }
