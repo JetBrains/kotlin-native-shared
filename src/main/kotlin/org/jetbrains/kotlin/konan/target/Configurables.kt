@@ -81,7 +81,7 @@ interface TargetableConfigurables : Configurables {
     val targetArg get() = targetString("quadruple")
 }
 
-interface AppleConfigurables : Configurables, OptFlags, ClangFlags {
+interface AppleConfigurables : Configurables, ClangFlags {
     val arch get() = targetString("arch")!!
     val osVersionMin get() = targetString("osVersionMin")!!
     val osVersionMinFlagLd get() = targetString("osVersionMinFlagLd")!!
