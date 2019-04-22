@@ -16,10 +16,19 @@
 
 buildscript {
     apply from: "gradle/kotlinGradlePlugin.gradle"
+
+    repositories {
+        maven { url = 'https://cache-redirector.jetbrains.com/jcenter' }
+    }
+
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
+    }
 }
 
 apply plugin: 'kotlin'
 apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 
 group = 'org.jetbrains.kotlin'
 
@@ -51,7 +60,6 @@ task javadocJar(type: Jar) {
     archiveClassifier = 'javadoc'
 }
 
-// TODO: Add bintray publishing.
 publishing {
     repositories {
         maven {
@@ -66,4 +74,23 @@ publishing {
             artifact javadocJar
         }
     }
+}
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayKey') ? project.property('bintrayKey') : System.getenv('BINTRAY_KEY')
+    pkg {
+        repo = 'kotlin-native-dependencies'
+        name = 'kotlin-native-shared'
+        userOrg = 'jetbrains'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/JetBrains/kotlin-native-shared'
+        version {
+            name = project.version
+            desc = "Kotlin/Native shared utilities $project.version"
+        }
+        publish  = project.findProperty("bintrayPublish").toString().toBoolean()
+        override = project.findProperty("bintrayOverride").toString().toBoolean()
+    }
+    publications = ['shared']
 }
