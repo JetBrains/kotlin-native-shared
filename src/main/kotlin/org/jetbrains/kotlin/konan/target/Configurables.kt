@@ -86,6 +86,7 @@ interface AppleConfigurables : Configurables, ClangFlags {
     val osVersionMin get() = targetString("osVersionMin")!!
     val osVersionMinFlagLd get() = targetString("osVersionMinFlagLd")!!
     val testingUtilitiesDir get() = hostString("testingUtilitiesDir")
+    val absoluteTestingUtilitiesDir get() = absolute(testingUtilitiesDir)
 }
 
 interface MingwConfigurables : TargetableConfigurables, LlvmLtoFlags
