@@ -26,6 +26,7 @@ enum class Family(val exeSuffix:String, val dynamicPrefix: String, val dynamicSu
                   val staticPrefix: String, val staticSuffix: String) {
     OSX     ("kexe", "lib", "dylib", "lib", "a"),
     IOS     ("kexe", "lib", "dylib", "lib", "a"),
+    TVOS    ("kexe", "lib", "dylib", "lib", "a"),
     LINUX   ("kexe", "lib", "so"   , "lib", "a"),
     MINGW   ("exe" , ""   , "dll"  , "lib", "a"),
     ANDROID ("so"  , "lib", "so"   , "lib", "a"),
@@ -49,6 +50,8 @@ sealed class KonanTarget(override val name: String, val family: Family, val arch
     object IOS_ARM32 :      KonanTarget( "ios_arm32",       Family.IOS,     Architecture.ARM32)
     object IOS_ARM64 :      KonanTarget( "ios_arm64",       Family.IOS,     Architecture.ARM64)
     object IOS_X64 :        KonanTarget( "ios_x64",         Family.IOS,     Architecture.X64)
+    object TVOS_ARM64 :     KonanTarget( "tvos_arm64",      Family.TVOS,    Architecture.ARM64)
+    object TVOS_X64 :       KonanTarget( "tvos_x64",        Family.TVOS,    Architecture.X64)
     object LINUX_X64 :      KonanTarget( "linux_x64",       Family.LINUX,   Architecture.X64)
     object MINGW_X86 :      KonanTarget( "mingw_x86",       Family.MINGW,   Architecture.X86)
     object MINGW_X64 :      KonanTarget( "mingw_x64",       Family.MINGW,   Architecture.X64)
@@ -64,6 +67,10 @@ sealed class KonanTarget(override val name: String, val family: Family, val arch
 
     override fun toString() = name
 }
+
+val KonanTarget.isAppleTarget: Boolean
+    get() =
+        family == Family.IOS || family == Family.TVOS || family == Family.OSX
 
 fun hostTargetSuffix(host: KonanTarget, target: KonanTarget) =
     if (target == host) host.name else "${host.name}-${target.name}"
@@ -135,7 +142,7 @@ open class HostManager(protected val distribution: Distribution = Distribution()
     // TODO: need a better way to enumerated predefined targets.
     private val predefinedTargets = listOf(
             ANDROID_ARM32, ANDROID_ARM64,
-            IOS_ARM32, IOS_ARM64, IOS_X64,
+            IOS_ARM32, IOS_ARM64, IOS_X64, TVOS_ARM64, TVOS_X64,
             LINUX_X64, LINUX_ARM32_HFP, LINUX_ARM64, LINUX_MIPS32, LINUX_MIPSEL32,
             MINGW_X64, MINGW_X86,
             MACOS_X64,
@@ -201,6 +208,8 @@ open class HostManager(protected val distribution: Distribution = Distribution()
             IOS_ARM32,
             IOS_ARM64,
             IOS_X64,
+            TVOS_ARM64,
+            TVOS_X64,
             LINUX_X64,
             LINUX_ARM32_HFP,
             LINUX_ARM64,

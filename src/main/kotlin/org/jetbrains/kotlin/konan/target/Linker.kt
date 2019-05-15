@@ -135,19 +135,22 @@ open class MacOSBasedLinker(targetProperties: AppleConfigurables)
     private val dsymutil = "$absoluteLlvmHome/bin/llvm-dsymutil"
 
     private fun provideCompilerRtLibrary(libraryName: String): String? {
-        val suffix = if (libraryName.isNotEmpty() && target == KonanTarget.IOS_X64) {
-            "iossim"
-        } else {
-            when (val family = configurables.target.family) {
-                Family.OSX -> "osx"
-                Family.IOS -> "ios"
-                else -> error("Family $family is unsupported")
-            }
+        val prefix = when (val family = target.family) {
+            Family.OSX -> "osx"
+            Family.IOS -> "ios"
+            Family.TVOS -> "tvos"
+            else -> error("Family $family is unsupported")
         }
-        val dir = File("$absoluteTargetToolchain/usr/lib/clang/").listFiles.firstOrNull()?.absolutePath
-        val mangledName = if (libraryName.isEmpty()) "" else "${libraryName}_"
+        val suffix = if (libraryName.isNotEmpty() && (target == KonanTarget.TVOS_X64 || target == KonanTarget.IOS_X64)) {
+            "sim"
+        } else {
+            ""
+        }
 
-        return if (dir != null) "$dir/lib/darwin/libclang_rt.$mangledName$suffix.a" else null
+        val dir = File("$absoluteTargetToolchain/usr/lib/clang/").listFiles.firstOrNull()?.absolutePath
+        val mangledLibraryName = if (libraryName.isEmpty()) "" else "${libraryName}_"
+
+        return if (dir != null) "$dir/lib/darwin/libclang_rt.$mangledLibraryName$prefix$suffix.a" else null
     }
 
     private val compilerRtLibrary: String? by lazy {
@@ -413,7 +416,9 @@ fun linker(configurables: Configurables): LinkerFlags =
                 LinuxBasedLinker(configurables as LinuxConfigurables)
             KonanTarget.LINUX_MIPS32, KonanTarget.LINUX_MIPSEL32 ->
                 LinuxBasedLinker(configurables as LinuxMIPSConfigurables)
-            KonanTarget.MACOS_X64, KonanTarget.IOS_ARM32, KonanTarget.IOS_ARM64, KonanTarget.IOS_X64 ->
+            KonanTarget.MACOS_X64,
+            KonanTarget.TVOS_X64, KonanTarget.TVOS_ARM64,
+            KonanTarget.IOS_ARM32, KonanTarget.IOS_ARM64, KonanTarget.IOS_X64 ->
                 MacOSBasedLinker(configurables as AppleConfigurables)
             KonanTarget.ANDROID_ARM32, KonanTarget.ANDROID_ARM64 ->
                 AndroidLinker(configurables as AndroidConfigurables)
