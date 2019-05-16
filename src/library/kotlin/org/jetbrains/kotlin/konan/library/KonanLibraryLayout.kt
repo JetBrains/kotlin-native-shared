@@ -22,51 +22,63 @@ import org.jetbrains.kotlin.konan.target.KonanTarget
 /**
  * This scheme describes the Kotlin/Native Library (KLIB) layout.
  */
-interface KonanLibraryLayout {
-
-    val libraryName: String
-
+interface KotlinLibraryLayout {
     val libDir: File
-    val target: KonanTarget?
-        // This is a default implementation. Can't make it an assignment.
-        get() = null
-
+    val libraryName: String
+        get() = libDir.path
     val manifestFile
         get() = File(libDir, "manifest")
     val resourcesDir
         get() = File(libDir, "resources")
+}
 
-    val targetsDir
-        get() = File(libDir, "targets")
-    val targetDir
-        get() = File(targetsDir, target!!.visibleName)
-
-    val kotlinDir
-        get() = File(targetDir, "kotlin")
-    val nativeDir
-        get() = File(targetDir, "native")
-    val includedDir
-        get() = File(targetDir, "included")
-
-    val linkdataDir
-        get() = File(libDir, "linkdata")
+interface MetadataKotlinLibraryLayout : KotlinLibraryLayout {
+    val metadataDir
+        get() = File(libDir, "metadata")
     val moduleHeaderFile
-        get() = File(linkdataDir, "module")
-    val dataFlowGraphFile
-        get() = File(linkdataDir, "module_data_flow_graph")
+        get() = File(metadataDir, "module")
 
-    fun packageFragmentsDir(packageName: String)
-            = File(linkdataDir, if (packageName == "") "root_package" else "package_$packageName")
+    fun packageFragmentsDir(packageName: String) =
+        File(metadataDir, if (packageName == "") "root_package" else "package_$packageName")
 
     fun packageFragmentFile(packageFqName: String, partName: String) =
-            File(packageFragmentsDir(packageFqName), "$partName$KLIB_METADATA_FILE_EXTENSION_WITH_DOT")
+        File(packageFragmentsDir(packageFqName), "$partName$KLIB_METADATA_FILE_EXTENSION_WITH_DOT")
+}
+
+interface IrKotlinLibraryLayout : KotlinLibraryLayout {
     val irDir
         get() = File(libDir, "ir")
     val irFile
         get() = File(irDir, "irCombined.knd")
     val irHeader
         get() = File(irDir, "irHeaders.kni")
-    val irIndex: File
-        get() = File(irDir, "uniqIdTableDump.txt")
-
+    val dataFlowGraphFile
+        get() = File(irDir, "module_data_flow_graph")
 }
+
+interface TargetedKotlinLibraryLayout : KotlinLibraryLayout {
+    val target: KonanTarget?
+        // This is a default implementation. Can't make it an assignment.
+        get() = null
+    val targetsDir
+        get() = File(libDir, "targets")
+    val targetDir
+        get() = File(targetsDir, target!!.visibleName)
+    val includedDir
+        get() = File(targetDir, "included")
+}
+
+interface BitcodeKotlinLibraryLayout : TargetedKotlinLibraryLayout, KotlinLibraryLayout {
+    val kotlinDir
+        get() = File(targetDir, "kotlin")
+    val nativeDir
+        get() = File(targetDir, "native")
+    // TODO: Experiment with separate bitcode files.
+    // Per package or per class.
+    val mainBitcodeFile
+        get() = File(kotlinDir, "program.kt.bc")
+    val mainBitcodeFileName
+        get() = mainBitcodeFile.path
+}
+
+interface KonanLibraryLayout : MetadataKotlinLibraryLayout, BitcodeKotlinLibraryLayout, IrKotlinLibraryLayout

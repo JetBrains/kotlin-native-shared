@@ -70,7 +70,7 @@ private class FileExtractor(val zippedLibraryLayout: ZippedKonanLibraryLayout): 
 
     override val nativeDir: File by lazy { extractDir(super.nativeDir) }
 
-    override val linkdataDir: File by lazy { extractDir(super.linkdataDir) }
+    override val metadataDir: File by lazy { extractDir(super.metadataDir) }
 
     override val irFile: File by lazy { extract(super.irFile) }
 
@@ -90,4 +90,7 @@ private class FileExtractor(val zippedLibraryLayout: ZippedKonanLibraryLayout): 
 }
 
 internal fun createKonanLibraryLayout(klib: File, target: KonanTarget? = null) =
-        if (klib.isFile) ZippedKonanLibraryLayout(klib, target) else UnzippedKonanLibraryLayout(klib, target)
+        if (klib.isFile)
+            ZippedKonanLibraryLayout(klib, target)
+        else
+            UnzippedKonanLibraryLayout(klib, target)
