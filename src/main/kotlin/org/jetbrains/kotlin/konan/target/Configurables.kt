@@ -104,7 +104,7 @@ interface LinuxBasedConfigurables : TargetableConfigurables, LlvmLtoFlags {
 interface LinuxConfigurables : LinuxBasedConfigurables
 interface LinuxMIPSConfigurables : LinuxBasedConfigurables
 interface RaspberryPiConfigurables : LinuxBasedConfigurables
-interface AndroidConfigurables : TargetableConfigurables
+interface AndroidConfigurables : TargetableConfigurables, LlvmLtoFlags
 
 interface WasmConfigurables : TargetableConfigurables, OptFlags, LlcFlags, LldFlags
 
