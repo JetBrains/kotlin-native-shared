@@ -16,6 +16,8 @@
 
 package org.jetbrains.kotlin.konan
 
+//TODO: Do we need it in the Big Kotlin? Discuss with Alexander.
+
 fun String.parseKonanAbiVersion(): KonanAbiVersion {
     return KonanAbiVersion(this.toInt())
 }
