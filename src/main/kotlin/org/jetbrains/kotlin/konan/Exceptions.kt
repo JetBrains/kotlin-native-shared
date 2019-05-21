@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// TODO(ilmat): Used by Command
+
 package org.jetbrains.kotlin.konan
 
 /**
