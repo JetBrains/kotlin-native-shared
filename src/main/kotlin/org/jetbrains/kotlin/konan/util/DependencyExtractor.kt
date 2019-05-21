@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.konan.file.unzipTo
 import java.io.File
 import java.util.concurrent.TimeUnit
 
+// TODO: Move it new-shared.
 
 class DependencyExtractor {
     internal val useZip = System.getProperty("os.name").startsWith("Windows")

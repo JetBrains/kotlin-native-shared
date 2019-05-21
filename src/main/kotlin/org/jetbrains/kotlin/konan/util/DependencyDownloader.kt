@@ -24,6 +24,8 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.util.concurrent.*
 
+// TODO: Move it new-shared.
+
 typealias ProgressCallback = (url: String, currentBytes: Long, totalBytes: Long) -> Unit
 
 class DependencyDownloader(

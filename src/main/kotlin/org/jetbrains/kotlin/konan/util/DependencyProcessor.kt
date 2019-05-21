@@ -30,6 +30,8 @@ import java.nio.file.Paths
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
+// TODO: Move it new-shared.
+
 private val Properties.dependenciesUrl : String
     get() = getProperty("dependenciesUrl")
             ?: throw IllegalStateException("No such property in konan.properties: dependenciesUrl")
