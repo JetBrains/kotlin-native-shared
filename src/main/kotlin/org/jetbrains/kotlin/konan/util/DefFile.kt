@@ -20,6 +20,8 @@ import java.io.File
 import java.io.StringReader
 import java.util.*
 
+// TODO: Move in new-shared
+
 class DefFile(val file:File?, val config:DefFileConfig, val manifestAddendProperties:Properties, val defHeaderLines:List<String>) {
     private constructor(file0:File?, triple: Triple<Properties, Properties, List<String>>): this(file0, DefFileConfig(triple.first), triple.second, triple.third)
     constructor(file:File?, substitutions: Map<String, String>) : this(file, parseDefFile(file, substitutions))
