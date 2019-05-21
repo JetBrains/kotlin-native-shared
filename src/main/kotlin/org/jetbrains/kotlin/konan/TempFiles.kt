@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.konan.file.*
  * Creates and stores temporary compiler outputs
  * If pathToTemporaryDir is given and is not empty then temporary outputs will be preserved
  */
+// TODO(ilmat). Usage: backend.native, interop -> move in backend.native.
 class TempFiles(outputPath: String, pathToTemporaryDir: String? = null) {
     private val outputName = File(outputPath).name
     val deleteOnExit = pathToTemporaryDir == null || pathToTemporaryDir.isEmpty()
