@@ -1,4 +1,4 @@
-package org.jetbrains.kotlin.konan.library.impl
+/*package org.jetbrains.kotlin.konan.library.impl
 
 import org.jetbrains.kotlin.konan.library.KonanLibraryLayout
 import org.jetbrains.kotlin.konan.library.MetadataReader
@@ -12,3 +12,4 @@ internal object DefaultMetadataReaderImpl : MetadataReader {
             libraryLayout.packageFragmentFile(fqName, partName).readBytes()
 
 }
+*/
