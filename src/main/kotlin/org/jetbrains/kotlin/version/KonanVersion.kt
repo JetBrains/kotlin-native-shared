@@ -5,8 +5,11 @@
 
 package org.jetbrains.kotlin.konan
 
+// TODO: make me org.jetbrains.kotlin.version
+
 import java.io.Serializable
 
+// TODO: make me KotlinStructuredVersion
 interface KonanVersion : Serializable {
     val meta: MetaVersion
     val major: Int
@@ -36,7 +39,7 @@ interface KonanVersion : Serializable {
     }
 }
 
-fun String.parseKonanVersion() = KonanVersion.fromString(this)
+fun String.parseCompilerStructuredVersion() = KonanVersion.fromString(this)
 
 data class KonanVersionImpl(
     override val meta: MetaVersion = MetaVersion.DEV,

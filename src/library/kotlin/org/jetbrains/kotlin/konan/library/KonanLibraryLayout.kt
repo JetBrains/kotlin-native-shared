@@ -18,43 +18,10 @@ package org.jetbrains.kotlin.konan.library
 
 import org.jetbrains.kotlin.konan.file.File
 import org.jetbrains.kotlin.konan.target.KonanTarget
+import org.jetbrains.kotlin.library.IrKotlinLibraryLayout
+import org.jetbrains.kotlin.library.KotlinLibraryLayout
+import org.jetbrains.kotlin.library.MetadataKotlinLibraryLayout
 
-/**
- * This scheme describes the Kotlin/Native Library (KLIB) layout.
- */
-interface KotlinLibraryLayout {
-    val libDir: File
-    val libraryName: String
-        get() = libDir.path
-    val manifestFile
-        get() = File(libDir, "manifest")
-    val resourcesDir
-        get() = File(libDir, "resources")
-}
-
-interface MetadataKotlinLibraryLayout : KotlinLibraryLayout {
-    val metadataDir
-        get() = File(libDir, "metadata")
-    val moduleHeaderFile
-        get() = File(metadataDir, "module")
-
-    fun packageFragmentsDir(packageName: String) =
-        File(metadataDir, if (packageName == "") "root_package" else "package_$packageName")
-
-    fun packageFragmentFile(packageFqName: String, partName: String) =
-        File(packageFragmentsDir(packageFqName), "$partName$KLIB_METADATA_FILE_EXTENSION_WITH_DOT")
-}
-
-interface IrKotlinLibraryLayout : KotlinLibraryLayout {
-    val irDir
-        get() = File(libDir, "ir")
-    val irFile
-        get() = File(irDir, "irCombined.knd")
-    val irHeader
-        get() = File(irDir, "irHeaders.kni")
-    val dataFlowGraphFile
-        get() = File(irDir, "module_data_flow_graph")
-}
 
 interface TargetedKotlinLibraryLayout : KotlinLibraryLayout {
     val target: KonanTarget?

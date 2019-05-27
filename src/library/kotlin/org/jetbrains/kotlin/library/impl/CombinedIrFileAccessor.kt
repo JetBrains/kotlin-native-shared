@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jetbrains.kotlin.konan.library.impl
+package org.jetbrains.kotlin.library.impl
 
 import org.jetbrains.kotlin.konan.file.File
 import java.io.RandomAccessFile

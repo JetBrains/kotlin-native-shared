@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.jetbrains.kotlin.konan
+package org.jetbrains.kotlin.library
 
-fun String.parseKonanAbiVersion(): KonanAbiVersion {
-    return KonanAbiVersion(this.toInt())
+fun String.parseKonanAbiVersion(): KotlinAbiVersion {
+    return KotlinAbiVersion(this.toInt())
 }
 
-data class KonanAbiVersion(val version: Int) {
+data class KotlinAbiVersion(val version: Int) {
     companion object {
-        val CURRENT = KonanAbiVersion(10)
+        val CURRENT = KotlinAbiVersion(10)
     }
     override fun toString() = "$version"
 }

@@ -1,4 +1,4 @@
-package org.jetbrains.kotlin.konan.library
+package org.jetbrains.kotlin.library
 
 data class UnresolvedLibrary(
     val path: String,

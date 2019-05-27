@@ -1,10 +1,9 @@
-package org.jetbrains.kotlin.konan.library
+package org.jetbrains.kotlin.library
 
 import org.jetbrains.kotlin.konan.file.File
 import org.jetbrains.kotlin.konan.file.file
 import org.jetbrains.kotlin.konan.file.withMutableZipFileSystem
-import org.jetbrains.kotlin.konan.library.impl.*
-import org.jetbrains.kotlin.konan.target.KonanTarget
+import org.jetbrains.kotlin.library.impl.zippedKotlinLibraryChecks
 
 const val KLIB_FILE_EXTENSION = "klib"
 const val KLIB_FILE_EXTENSION_WITH_DOT = ".$KLIB_FILE_EXTENSION"

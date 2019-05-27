@@ -24,24 +24,8 @@ import org.jetbrains.kotlin.konan.properties.propertyList
 import org.jetbrains.kotlin.konan.target.KonanTarget
 import org.jetbrains.kotlin.konan.util.defaultTargetSubstitutions
 import org.jetbrains.kotlin.konan.util.substitute
-
-open class BaseKotlinLibraryImpl(
-    private val access: BaseLibraryAccess<KotlinLibraryLayout>,
-    override val isDefault: Boolean
-) : BaseKotlinLibrary {
-    override val libraryFile get() = access.klib
-    override val libraryName: String by lazy { access.inPlace { it.libraryName } }
-
-    override fun toString() = "$libraryName[default=$isDefault]"
-
-    override val manifestProperties: Properties by lazy {
-        access.inPlace { it.manifestFile.loadProperties() }
-    }
-
-    override val versions: KonanLibraryVersioning by lazy {
-        manifestProperties.readKonanLibraryVersioning()
-    }
-}
+import org.jetbrains.kotlin.library.*
+import org.jetbrains.kotlin.library.impl.*
 
 open class TargetedLibraryImpl(
     private val access: TargetedLibraryAccess<TargetedKotlinLibraryLayout>,
@@ -72,73 +56,6 @@ open class TargetedLibraryImpl(
         }
 }
 
-open class MetadataLibraryImpl(
-    private val access: MetadataLibraryAccess<MetadataKotlinLibraryLayout>
-) : MetadataLibrary {
-
-    override val moduleHeaderData: ByteArray by lazy {
-        access.inPlace {
-            it.moduleHeaderFile.readBytes()
-        }
-    }
-
-    override fun packageMetadata(fqName: String, partName: String): ByteArray =
-        access.inPlace {
-            it.packageFragmentFile(fqName, partName).readBytes()
-        }
-
-    override fun packageMetadataParts(fqName: String): Set<String> =
-        access.inPlace { inPlaceaccess ->
-            val fileList =
-                inPlaceaccess.packageFragmentsDir(fqName)
-                    .listFiles
-                    .mapNotNull {
-                        it.name
-                            .substringBeforeLast(KLIB_METADATA_FILE_EXTENSION_WITH_DOT, missingDelimiterValue = "")
-                            .takeIf { it.isNotEmpty() }
-                    }
-
-            fileList.toSortedSet().also {
-                require(it.size == fileList.size) { "Duplicated names: ${fileList.groupingBy { it }.eachCount().filter { (_, count) -> count > 1 }}" }
-            }
-        }
-}
-
-open class IrLibraryImpl(
-    private val access: IrLibraryAccess<IrKotlinLibraryLayout>
-) : IrLibrary {
-
-    override val irHeader: ByteArray? by lazy {
-        access.inPlace { library: IrKotlinLibraryLayout ->
-            library.irHeader.let {
-                if (it.exists) loadIrHeader() else null
-            }
-        }
-    }
-
-    override fun irDeclaration(index: Long, isLocal: Boolean) = loadIrDeclaraton(index, isLocal)
-
-    private val combinedDeclarations: CombinedIrFileReader by lazy {
-        CombinedIrFileReader(access.realFiles {
-            it.irFile
-        })
-    }
-
-    private fun loadIrHeader(): ByteArray =
-        access.inPlace {
-            it.irHeader.readBytes()
-        }
-
-    private fun loadIrDeclaraton(index: Long, isLocal: Boolean) =
-        combinedDeclarations.declarationBytes(DeclarationId(index, isLocal))
-
-    override val dataFlowGraph by lazy {
-        access.inPlace { it: IrKotlinLibraryLayout ->
-            it.dataFlowGraphFile.let { if (it.exists) it.readBytes() else null }
-        }
-    }
-}
-
 open class BitcodeLibraryImpl(
     private val access: BitcodeLibraryAccess<BitcodeKotlinLibraryLayout>,
     targeted: TargetedLibrary
@@ -159,6 +76,7 @@ class KonanLibraryImpl(
     MetadataLibrary by metadata,
     IrLibrary by ir,
     BitcodeLibrary by bitcode {
+
     override val linkerOpts: List<String>
         get() = manifestProperties.propertyList(KLIB_PROPERTY_LINKED_OPTS, escapeInQuotes = true)
 }
