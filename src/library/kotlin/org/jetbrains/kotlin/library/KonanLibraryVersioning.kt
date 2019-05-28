@@ -1,16 +1,13 @@
-package org.jetbrains.kotlin.konan.library
+package org.jetbrains.kotlin.library
 
-import org.jetbrains.kotlin.konan.KonanVersion
 import org.jetbrains.kotlin.konan.parseKonanVersion
-import org.jetbrains.kotlin.konan.KonanAbiVersion
 import org.jetbrains.kotlin.konan.properties.Properties
-import org.jetbrains.kotlin.konan.parseKonanAbiVersion
-
+import org.jetbrains.kotlin.konan.KonanVersion
 
 data class KonanLibraryVersioning(
     val libraryVersion: String?,
     val compilerVersion: KonanVersion?,
-    val abiVersion: KonanAbiVersion?
+    val abiVersion: KotlinAbiVersion?
 )
 
 fun Properties.writeKonanLibraryVersioning(versions: KonanLibraryVersioning) {
@@ -24,5 +21,9 @@ fun Properties.readKonanLibraryVersioning(): KonanLibraryVersioning {
     val libraryVersion = this.getProperty(KLIB_PROPERTY_LIBRARY_VERSION)
     val compilerVersion = this.getProperty(KLIB_PROPERTY_COMPILER_VERSION)?.parseKonanVersion()
 
-    return KonanLibraryVersioning(abiVersion = abiVersion, libraryVersion = libraryVersion, compilerVersion = compilerVersion)
+    return KonanLibraryVersioning(
+        abiVersion = abiVersion,
+        libraryVersion = libraryVersion,
+        compilerVersion = compilerVersion
+    )
 }
