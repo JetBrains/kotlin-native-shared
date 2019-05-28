@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.konan.file.File
 import org.jetbrains.kotlin.konan.file.file
 import org.jetbrains.kotlin.konan.file.withZipFileSystem
 import org.jetbrains.kotlin.library.*
-import org.jetbrains.kotlin.konan.target.KonanTarget
 import org.jetbrains.kotlin.konan.util.removeSuffixIfPresent
 import java.nio.file.FileSystem
 
@@ -97,7 +96,7 @@ class FromZipIrLibraryImpl(zipped: IrLibraryLayoutImpl, zipFileSystem: FileSyste
  * This class and its children automatically extracts pieces of the library on first access. Use it if you need
  * to pass extracted files to an external tool. Otherwise, stick to [FromZipBaseLibraryImpl].
  */
-open class ExtractingKotlinLibraryAccess(private val zipped: KotlinLibraryLayoutImpl) : KotlinLibraryLayout by zipped {
+open class KotlinLibraryExtractor(private val zipped: KotlinLibraryLayoutImpl) {
     fun extract(file: File): File = zipped.klib.withZipFileSystem { zipFileSystem ->
         val temporary = org.jetbrains.kotlin.konan.file.createTempFile(file.name)
         zipFileSystem.file(file).copyTo(temporary)
@@ -114,22 +113,22 @@ open class ExtractingKotlinLibraryAccess(private val zipped: KotlinLibraryLayout
 }
 
 open class ExtractingBaseLibraryImpl(zipped: KotlinLibraryLayoutImpl) :
-    ExtractingKotlinLibraryAccess(zipped),
-    KotlinLibraryLayout {
+    KotlinLibraryExtractor(zipped),
+    KotlinLibraryLayout by zipped {
 
     override val manifestFile: File by lazy { extract(zipped.manifestFile) }
     override val resourcesDir: File by lazy { extractDir(zipped.resourcesDir) }
 }
 
 class ExtractingMetadataLibraryImpl(zipped: MetadataLibraryLayoutImpl) :
-    ExtractingKotlinLibraryAccess(zipped),
-    MetadataKotlinLibraryLayout {
+    KotlinLibraryExtractor(zipped),
+    MetadataKotlinLibraryLayout by zipped {
 
     override val metadataDir: File by lazy { extractDir(zipped.metadataDir) }
 }
 
-class ExtractingIrLibraryImpl(zipped: IrLibraryLayoutImpl) : ExtractingKotlinLibraryAccess(zipped),
-    IrKotlinLibraryLayout {
+class ExtractingIrLibraryImpl(zipped: IrLibraryLayoutImpl) : KotlinLibraryExtractor(zipped),
+    IrKotlinLibraryLayout by zipped {
 
     override val irFile: File by lazy { extract(zipped.irFile) }
 }

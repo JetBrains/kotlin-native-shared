@@ -47,8 +47,8 @@ private class FromZipBitcodeLibraryImpl(zipped: BitcodeLibraryLayoutImpl, zipFil
     FromZipTargetedLibraryImpl(zipped, zipFileSystem), BitcodeKotlinLibraryLayout
 
 open class ExtractingTargetedLibraryImpl(zipped: TargetedLibraryLayoutImpl) :
-    ExtractingKotlinLibraryAccess(zipped),
-    TargetedKotlinLibraryLayout {
+    KotlinLibraryExtractor(zipped),
+    TargetedKotlinLibraryLayout by zipped {
 
     override val includedDir: File by lazy { extractDir(zipped.includedDir) }
 }
